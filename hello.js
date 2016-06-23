@@ -1,5 +1,11 @@
-var arr = [1,2];
+function setup() {
+	createCanvas(600, 600);
+	stroke(0);
+}
 
-arr.push(3);
-
-console.log(arr[arr.length-1]);
+function draw() {
+	var axis = Vector(width/2, height/2);
+	translate(width/2, height/2);
+	rotate(PI/3.0);
+	line
+}

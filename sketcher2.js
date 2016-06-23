@@ -1,47 +1,149 @@
-var pastPoints = [];
-var fRate = 15;
+// TODO: slider to adjust size of the canvas.
+// TODO: label the axis.
+// TODO: simplify the axis drawing
+// TODO: padding and margins
+// TODO: scale maybe??
+// TODO: Discontinuity
+// TODO: not in one go??
+
+var gridWidth = 30;
+var strkWeight = 2;
+var padding = 0;
 
 function setup() {
-	createCanvas(720, 400);
+	createCanvas(600, 600);
 	background(255);
-	frameRate(fRate);
-	loop();
+	noLoop();
 }
+
+function draw() {
+	// draw grid, axis, and label
+	drawGrid();
+	drawHorizontalAxis();
+	drawVerticalAxis();
+	drawLabel();
+}
+
+function drawHorizontalAxis() {
+	push();
+	
+	noFill();
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
+	stroke(0);
+
+	var leftMargin = padding;
+	var rightMargin = width - padding;
+
+	beginShape();
+	vertex(leftMargin, height/2);
+	vertex(rightMargin, height / 2);
+	vertex(rightMargin - 10, height / 2 - 5);
+	vertex(rightMargin, height / 2);
+	vertex(rightMargin - 10, height / 2 + 5);
+	endShape();
+	
+	pop();
+}
+
+function drawVerticalAxis() {
+	push();
+	
+	noFill();
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
+	stroke(0);
+
+	var upMargin = padding;
+	var bottomMargin = height - padding;
+
+	beginShape();
+	vertex(width/2, bottomMargin);
+	vertex(width/2, upMargin);
+	vertex(width/2 - 5, upMargin + 10);
+	vertex(width/2, upMargin);
+	vertex(width/2 + 5, upMargin + 10);
+	endShape();
+	
+	pop();
+}
+
+function drawGrid() {
+	push();
+	stroke(215);
+	strokeWeight(strkWeight);
+
+	var num = height / gridWidth;
+	for (var i = 0; i < num; i++) {
+		line(0, i*gridWidth, width, i*gridWidth);
+	}
+
+	var num = width / gridWidth;
+	for (var i = 0; i < num; i++) {
+		line(i*gridWidth, 0, i*gridWidth, height);
+	}
+
+	pop();
+}
+
+function drawLabel() {
+	push();
+
+	textSize(16);
+	stroke(0);
+	text("0", width/2 - 12, height/2 + 15);
+	text("x", width - 12, height/2 + 15);
+	text("y", width/2 - 15, 12);
+
+	pop();
+}
+
+// --------------------------------------------------
+var drawnPoints;
+var testPoints;
 
 var Point = function(x, y) {
 	this.x = x;
 	this.y = y;
-	this.time = 2 * fRate;
-	this.isTimeOut = function() {
-		return (this.time === 0);
-	};
 }
 
-function draw() {
+function mouseDragged() {
+	var current = new Point(mouseX, mouseY);
+
+	push();
+	stroke(0, 155, 255);
+	strokeWeight(strkWeight);
+	if (drawnPoints.length > 0) {
+		var prev = drawnPoints[drawnPoints.length - 1];
+		line(prev.x, prev.y, current.x, current.y);
+	}
+	pop();
+
+	drawnPoints.push(current);	
+}
+
+function mousePressed() {
 	clear();
+	drawGrid();
+	drawHorizontalAxis();
+	drawVerticalAxis();
+	drawLabel();
 
-	pastPoints.push(new Point(mouseX, mouseY));
+	testPoints = drawnPoints;
+	drawnPoints = [];
+}
 
-	var count = pastPoints.length - 1;
-	while (count >= 0 && !(pastPoints[count].isTimeOut())) {
-		pastPoints[count].time--;
-		count--;
-	}
-
-
-	if (count >= 0) {
-		pastPoints = pastPoints.slice(count);
-	}
-
-	var cStep = 255 / pastPoints.length;
-	
-	for (var i = 1; i < pastPoints.length; i++) {
-		stroke(255 - i * cStep);
-		ellipse(pastPoints[i-1].x, pastPoints[i-1].y, 10, 10);
-		var px = pastPoints[i-1].x;
-		var py = pastPoints[i-1].y;
-		var cx = pastPoints[i].x;
-		var cy = pastPoints[i].y;
-		line(cx, cy, px, py);
+function mouseReleased() {
+	if (typeof testPoints != "undefined") {
+		test(testPoints, drawnPoints);
 	}
 }
+
+
+
+
+
+
+
+
+

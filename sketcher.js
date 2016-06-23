@@ -115,6 +115,7 @@ function mousePressed() {
 	drawGrid();
 	drawHorizontalAxis();
 	drawVerticalAxis();
+	drawLabel();
 
 	testPoints = drawnPoints;
 	drawnPoints = [];
