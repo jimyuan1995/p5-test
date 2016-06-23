@@ -8,7 +8,7 @@
 
 var gridWidth = 30;
 var strkWeight = 2;
-var padding = 0;
+var padding = 15;
 
 function setup() {
 	createCanvas(600, 600);
@@ -91,7 +91,7 @@ function drawLabel() {
 
 	textSize(16);
 	stroke(0);
-	text("0", width/2 - 12, height/2 + 15);
+	text("O", width/2 - 15, height/2 + 15);
 	text("x", width - 12, height/2 + 15);
 	text("y", width/2 - 15, 12);
 

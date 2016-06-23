@@ -6,6 +6,7 @@ function distance(a, b) {
 }
 
 function gradient(a, b) {
+	if (a.x - b.x == 0) return 0;
 	return (a.y - b.y) / (a.x - b.x);
 }
 
@@ -44,8 +45,11 @@ function findError(arr1, arr2) {
 
 	while (idx1 < arr1.length && idx2 < arr2.length) {
 		if (arr1[idx1].x > arr2[idx2].x) {
-			idx2++;
-			continue;
+			if (arr2[idx2 + 1].x > arr2[idx2].x) {
+				idx2++;
+				continue;
+			} 
+			
 		}
 		if (idx2 == 0) {
 			idx1++;
@@ -65,7 +69,15 @@ function findError(arr1, arr2) {
 
 
 function test(testPoints, drawnPoints) {
-	var err = findError(sampling(testPoints), sampling(drawnPoints));
+	var sampledTestPoints = sampling(testPoints);
+	var sampledDrawnPoints = sampling(drawnPoints);
+	if (sampledDrawnPoints.length < 5) 
+	{
+		console.log("Incorrect!");
+		return;
+	}
+	
+	var err = findError(sampledTestPoints, sampledDrawnPoints);
 	console.log(err);
 
 	if (err > tolerance) {
