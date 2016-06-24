@@ -1,23 +1,30 @@
+// provide sketch interface and collect drawn data points from user.
+
 // TODO: slider to adjust size of the canvas.
-// TODO: label the axis.
-// TODO: simplify the axis drawing
-// TODO: padding and margins
-// TODO: scale maybe??
-// TODO: Discontinuity
-// TODO: not in one go??
 
 var gridWidth = 30;
 var strkWeight = 2;
 var padding = 15;
+var drawnPoints;
+var testPoints;
+
+var Point = function(x, y) {
+	this.x = x;
+	this.y = y;
+	this.getDist = function(other) {
+		return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+	}
+}
 
 function setup() {
 	createCanvas(600, 600);
 	background(255);
 	noLoop();
-}
 
-function draw() {
-	// draw grid, axis, and label
+	noFill();
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
+
 	drawGrid();
 	drawHorizontalAxis();
 	drawVerticalAxis();
@@ -27,9 +34,6 @@ function draw() {
 function drawHorizontalAxis() {
 	push();
 	
-	noFill();
-	strokeWeight(strkWeight);
-	strokeJoin(ROUND);
 	stroke(0);
 
 	var leftMargin = padding;
@@ -49,9 +53,6 @@ function drawHorizontalAxis() {
 function drawVerticalAxis() {
 	push();
 	
-	noFill();
-	strokeWeight(strkWeight);
-	strokeJoin(ROUND);
 	stroke(0);
 
 	var upMargin = padding;
@@ -71,7 +72,6 @@ function drawVerticalAxis() {
 function drawGrid() {
 	push();
 	stroke(215);
-	strokeWeight(strkWeight);
 
 	var num = height / gridWidth;
 	for (var i = 0; i < num; i++) {
@@ -98,22 +98,21 @@ function drawLabel() {
 	pop();
 }
 
-
-// --------------------------------------------------
-var drawnPoints;
-var testPoints;
-
-var Point = function(x, y) {
-	this.x = x;
-	this.y = y;
+function drawCurve(pts) {
+	push();
+	stroke(0, 155, 255);
+	for (var i = 1; i < pts.length; i++) {
+		line(pts[i-1].x, pts[i-1].y, pts[i].x, pts[i].y);
+	}
+	pop();
 }
+
 
 function mouseDragged() {
 	var current = new Point(mouseX, mouseY);
-
+	
 	push();
 	stroke(0, 155, 255);
-	strokeWeight(strkWeight);
 	if (drawnPoints.length > 0) {
 		var prev = drawnPoints[drawnPoints.length - 1];
 		line(prev.x, prev.y, current.x, current.y);
@@ -124,34 +123,23 @@ function mouseDragged() {
 }
 
 function mousePressed() {
-	clear();
-	drawGrid();
-	drawHorizontalAxis();
-	drawVerticalAxis();
-	drawLabel();
-
+	setup();
 	testPoints = drawnPoints;
 	drawnPoints = [];
 }
 
 function mouseReleased() {
-
-	clear();
-	drawGrid();
-	drawHorizontalAxis();
-	drawVerticalAxis();
-	drawLabel();
+	setup();
+	var bez = genericBezier(sample(drawnPoints))
+	drawCurve(bez);
 
 	if (typeof testPoints != "undefined") {
-		test(testPoints, drawnPoints);
+		test(sample(genericBezier(testPoints)), bez);
 	}
-}
+}	
 
 
 
-function drawSmoothedCurve() {
-
-}
 
 
 

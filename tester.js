@@ -1,5 +1,5 @@
 var tolerance = 20;
-var sampleInterval = 10;
+var sampleInterval = 20;
 
 function distance(a, b) {
 	return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
