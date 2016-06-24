@@ -5,4 +5,3 @@ function httpGet(url) {
 	return xhr.responseText;
 }
 
-console.log(httpGet());
