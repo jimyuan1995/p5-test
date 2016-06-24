@@ -1,7 +1,8 @@
-function setup() {
-	createCanvas(600, 600);
-	stroke(0);
+function httpGet(url) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, false);
+	xhr.send(null);
+	return xhr.responseText;
 }
 
-
-console.log(typeof NaN);
+console.log(httpGet());

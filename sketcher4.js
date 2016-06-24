@@ -1,7 +1,5 @@
 // provide sketch interface and collect drawn data points from user.
 
-// TODO: slider to adjust size of the canvas.
-
 var gridWidth = 30;
 var strkWeight = 2;
 var padding = 15;
@@ -79,15 +77,23 @@ function drawGrid() {
 	strokeJoin(ROUND);
 	stroke(215);
 
-	var num = height / gridWidth;
+	push();
+	translate(0, height / 2);
+	var num = height / (gridWidth * 2);
 	for (var i = 0; i < num; i++) {
+		line(0, -i*gridWidth, width, -i*gridWidth);
 		line(0, i*gridWidth, width, i*gridWidth);
 	}
+	pop();
 
-	var num = width / gridWidth;
+	push();
+	translate(width / 2, 0);
+	var num = width / (gridWidth * 2);
 	for (var i = 0; i < num; i++) {
+		line(-i*gridWidth, 0, -i*gridWidth, height);
 		line(i*gridWidth, 0, i*gridWidth, height);
 	}
+	pop();
 
 	pop();
 }

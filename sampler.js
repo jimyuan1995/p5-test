@@ -1,4 +1,5 @@
 // Given a set of data points, sample a subset of points such that there is about constant space interval between two adjacent points.
+
 var sampleSpaceInterval = 10;
 
 function sample(pts) {
