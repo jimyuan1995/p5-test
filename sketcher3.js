@@ -5,14 +5,14 @@
 var gridWidth = 30;
 var strkWeight = 2;
 var padding = 15;
-var drawnPoints;
-var testPoints;
+var drawnPoints = [];
+var testPoints = [];
 
 var Point = function(x, y) {
 	this.x = x;
 	this.y = y;
 	this.getDist = function(other) {
-		return Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+		return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
 	}
 }
 
@@ -20,10 +20,6 @@ function setup() {
 	createCanvas(600, 600);
 	background(255);
 	noLoop();
-
-	noFill();
-	strokeWeight(strkWeight);
-	strokeJoin(ROUND);
 
 	drawGrid();
 	drawHorizontalAxis();
@@ -34,7 +30,10 @@ function setup() {
 function drawHorizontalAxis() {
 	push();
 	
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
 	stroke(0);
+	noFill();
 
 	var leftMargin = padding;
 	var rightMargin = width - padding;
@@ -53,7 +52,10 @@ function drawHorizontalAxis() {
 function drawVerticalAxis() {
 	push();
 	
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
 	stroke(0);
+	noFill();
 
 	var upMargin = padding;
 	var bottomMargin = height - padding;
@@ -71,6 +73,10 @@ function drawVerticalAxis() {
 
 function drawGrid() {
 	push();
+
+	noFill();
+	strokeWeight(strkWeight);
+	strokeJoin(ROUND);
 	stroke(215);
 
 	var num = height / gridWidth;
@@ -91,6 +97,8 @@ function drawLabel() {
 
 	textSize(16);
 	stroke(0);
+	strokeWeight(1);
+
 	text("O", width/2 - 15, height/2 + 15);
 	text("x", width - 12, height/2 + 15);
 	text("y", width/2 - 15, 12);
@@ -100,7 +108,7 @@ function drawLabel() {
 
 function drawCurve(pts) {
 	push();
-	stroke(0, 155, 255);
+	strokeWeight(strkWeight);
 	for (var i = 1; i < pts.length; i++) {
 		line(pts[i-1].x, pts[i-1].y, pts[i].x, pts[i].y);
 	}
@@ -124,17 +132,29 @@ function mouseDragged() {
 
 function mousePressed() {
 	setup();
+	
 	testPoints = drawnPoints;
 	drawnPoints = [];
+
+	if (testPoints.length != 0) {
+		stroke(0);
+		var testBez = genericBezier(sample(testPoints));
+		drawCurve(testBez);
+	}	
 }
 
 function mouseReleased() {
 	setup();
-	var bez = genericBezier(sample(drawnPoints))
-	drawCurve(bez);
 
-	if (typeof testPoints != "undefined") {
-		test(sample(genericBezier(testPoints)), bez);
+	stroke(0, 155, 255);
+	var drawBez = genericBezier(sample(drawnPoints));
+	drawCurve(drawBez);
+	
+	if (testPoints.length != 0) {
+		stroke(0);
+		var testBez = genericBezier(sample(testPoints));
+		drawCurve(testBez);
+		test(testBez, drawBez);
 	}
 }	
 

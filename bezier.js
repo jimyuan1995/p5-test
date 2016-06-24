@@ -2,21 +2,12 @@
 
 var NumControlKnots = 100;
 
-function factorial(n) {
-	if (n == 0) return 1;
-	return n * factorial(n-1);
-}
-
-function getCombNum(n, r) {
-	return factorial(n) / (factorial(r) * factorial(n-r));
-}
-
 function genericBezier(pts) {
 
 	var n = pts.length - 1;
 	var comb = [];
 	for (var r = 0; r <= n; r++) {
-		comb.push(getCombNum(n, r));
+		comb.push(math.combinations(n, r));
 	}
 
 	var step = 1 / NumControlKnots;
