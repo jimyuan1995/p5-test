@@ -2,6 +2,6 @@ function httpGet(url) {
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", url, false);
 	xhr.send(null);
-	return xhr.JSON.parse();
+	return JSON.parse(xhr.responseText);
 }
 
