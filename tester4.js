@@ -1,6 +1,6 @@
 // test the correctness of user-drawn diagrams.
-var error_tolerance = 0.1;
-var normDegree = 2;
+var error_tolerance = 0.02;
+var normDegree = 3;
 
 function findError(pts1, pts2) {
 	var err = 0;
@@ -15,8 +15,6 @@ function normalise(pts) {
 		minY = pts[0].y, 
 		maxX = pts[0].x, 
 		minX = pts[0].x;
-
-
 
 	for (var i = 1; i < pts.length; i++) {
 		maxY = Math.max(pts[i].y, maxY);
@@ -42,6 +40,7 @@ function normalise(pts) {
 
 function test(testPoints, drawnPoints) {
 	console.log(normalise(testPoints));
+	console.log(normalise(drawnPoints));
 	var err = findError(normalise(testPoints), normalise(drawnPoints));
 	console.log(err);
 	if (err > error_tolerance) {
