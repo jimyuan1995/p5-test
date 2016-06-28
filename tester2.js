@@ -1,5 +1,4 @@
 // test the correctness of user-drawn diagrams.
-
 var error_tolerance = 2;
 var normDegree = 3;
 

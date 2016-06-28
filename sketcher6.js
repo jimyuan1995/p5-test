@@ -1,10 +1,22 @@
 // provide sketch interface and collect drawn data points from user.
 
-var gridWidth = 60;
+// drawing coefficients
+var gridWidth = 30;
 var strkWeight = 2;
 var padding = 15;
-var drawnPoints = [];
-var testPoints = [];
+
+// point collection
+var drawnPtsPartial;
+var drawnPtsAll = [];
+
+// for moving curve
+var movedPtsIdx;
+var isMoveCurve;
+var prevMousePt;
+
+// for testing
+var testPts = transform(funcPts(Math.sin, -p5.PI, p5.PI), gridWidth, gridWidth, p5.width/2, p5.height/2);
+
 
 var Point = function(x, y) {
 	this.x = x;
@@ -18,23 +30,15 @@ function setup() {
 	createCanvas(600, 600);
 	background(255);
 	noLoop();
+	cursor(CROSS);
 
 	drawGrid();
 	drawHorizontalAxis();
 	drawVerticalAxis();
 	drawLabel();
 	//drawScale();
-}
+	drawButton();
 
-function draw() {
-	push();
-
-	stroke(0, 155, 255);
-	var pts = funcPts(Math.sin, -PI, PI);
-	var pts = transform(pts, gridWidth, gridWidth, width/2, height/2);
-	drawCurve(pts);
-
-	pop();
 }
 
 function drawHorizontalAxis() {
@@ -157,8 +161,24 @@ function drawScale() {
 	pop();
 }
 
-function drawCurve(pts) {
+function drawButton() {
+	var buttonClear = createButton('clear');
+	buttonClear.position(width - 50, padding);
+	buttonClear.mousePressed(function() {
+		setup();
+		drawnPtsAll = [];
+	});
+
+	var buttonTest = createButton("test");
+	buttonTest.position(width - 50, padding+20);
+	buttonTest.mousePressed(function() {
+		test(testPts, drawnPtsAll[0]);
+	});
+}
+
+function drawCurve(pts, color) {
 	push();
+	stroke(color);
 	strokeWeight(strkWeight);
 	for (var i = 1; i < pts.length; i++) {
 		line(pts[i-1].x, pts[i-1].y, pts[i].x, pts[i].y);
@@ -168,50 +188,73 @@ function drawCurve(pts) {
 
 
 function mouseDragged() {
-	var current = new Point(mouseX, mouseY);
+	if (!isMoveCurve) {
+		var current = new Point(mouseX, mouseY);
 	
-	push();
-	stroke(0, 155, 255);
-	strokeWeight(strkWeight);
-	if (drawnPoints.length > 0) {
-		var prev = drawnPoints[drawnPoints.length - 1];
-		line(prev.x, prev.y, current.x, current.y);
-	}
-	pop();
+		push();
+		stroke(0, 155, 255);
+		strokeWeight(strkWeight);
+		if (drawnPtsPartial.length > 0) {
+			var prev = drawnPtsPartial[drawnPtsPartial.length - 1];
+			line(prev.x, prev.y, current.x, current.y);
+		}
+		pop();
 
-	drawnPoints.push(current);	
+		drawnPtsPartial.push(current);	
+	} else {
+		var current = new Point(mouseX, mouseY);
+		var dx = current.x - prevMousePt.x;
+		var dy = current.y - prevMousePt.y;
+		drawnPtsAll[movedPtsIdx] = transform(drawnPtsAll[movedPtsIdx], 1, 1, dx, dy);
+		prevMousePt = current;
+
+		setup();
+		for (var i = 0; i < drawnPtsAll.length; i++) {
+			if (i == movedPtsIdx) {
+				drawCurve(drawnPtsAll[i], [135]);
+			} else {
+				drawCurve(drawnPtsAll[i], [0, 155, 255]);
+			}
+		}
+	}
+
 }
 
 function mousePressed() {
-	setup();
-	
-	testPoints = drawnPoints;
-	drawnPoints = [];
+	var p = new Point(mouseX, mouseY);
+	for (var i = 0; i < drawnPtsAll.length; i++) {
+		var pts = drawnPtsAll[i];
+		for (var j = 0; j < pts.length; j++) {
+			if (pts[j].getDist(p) < 10) {
+				movedPtsIdx = i;
+				isMoveCurve = true;
+				prevMousePt = p;
+				drawCurve(drawnPtsAll[i], [135]);
+				return false;
+			}
+		}
+	}
 
-	if (testPoints.length != 0) {
-		stroke(0);
-		var testBez = genericBezier(sample(testPoints));
-		drawCurve(testBez);
-	}	
+	isMoveCurve = false;
+	drawnPtsPartial = [];
 }
 
 function mouseReleased() {
-	setup();
+	if (!isMoveCurve) {
+		var drawBez = genericBezier(sample(drawnPtsPartial));
+		if (drawBez.length > 0) drawnPtsAll.push(drawBez);
 
-	stroke(0, 155, 255);
-	var drawBez = genericBezier(sample(drawnPoints));
-	console.log(drawBez);
-	drawCurve(drawBez);
-	
-	if (testPoints.length != 0) {
-		stroke(0);
-		var testBez = genericBezier(sample(testPoints));
-		drawCurve(testBez);
-		test(testBez, drawBez);
+		setup();
+		for (var i = 0; i < drawnPtsAll.length; i++) {
+			drawCurve(drawnPtsAll[i], [0, 155, 255]);
+		}
+
+	} else {
+		drawCurve(drawnPtsAll[movedPtsIdx], [0, 155, 255]);
+		isMoveCurve = false;
 	}
-}	
-
-
+}
+	
 
 
 

@@ -12,5 +12,6 @@ function sample(pts) {
 		if (j < pts.length) sampledKnots.push(pts[j]);
 		i = j;
 	}
+	sampledKnots.push(pts[pts.length - 1]);
 	return sampledKnots;
 }

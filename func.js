@@ -3,7 +3,7 @@ var num = 200;
 function transform(pts, scaleX, scaleY, biasX, biasY) {
 	for (var i = 0; i < pts.length; i++) {
 		pts[i].x = pts[i].x * scaleX + biasX;
-		pts[i].y = pts[i].y * (-scaleY) + biasY;
+		pts[i].y = pts[i].y * scaleY + biasY;
 	}
 	return pts;
 }
