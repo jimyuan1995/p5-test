@@ -11,27 +11,17 @@ function findError(pts1, pts2) {
 }
 
 function normalise(pts) {
-	var maxY = pts[0].y, 
-		minY = pts[0].y, 
-		maxX = pts[0].x, 
-		minX = pts[0].x;
-
+	var maxY = 0, 
+		maxX = 0;
 	for (var i = 1; i < pts.length; i++) {
-		maxY = Math.max(pts[i].y, maxY);
-		minY = Math.min(pts[i].y, minY);
-		maxX = Math.max(pts[i].x, maxX);
-		minX = Math.min(pts[i].x, minX);
+		maxY = Math.max(abs(height/2 - pts[i].y), maxY);
+		maxX = Math.max(abs(pts[i].x - width/2), maxX);
 	}
-
-	console.log(maxY + " " + minY + " " + maxX + " " + minX);
-
+	
 	var normalisedPts = [];
-	var rangeX = maxX - minX;
-	var rangeY = maxY - minY;
-
 	for (var i = 0; i < pts.length; i++) {
-		var nx = (pts[i].x - minX) / rangeX;
-		var ny = (pts[i].y - minY) / rangeY;
+		var nx = (pts[i].x - width/2) / maxX;
+		var ny = (height/2 - pts[i].y) / maxY;
 		normalisedPts.push(new Point(nx, ny));
 	}
 
@@ -39,9 +29,10 @@ function normalise(pts) {
 }
 
 function test(testPoints, drawnPoints) {
-	console.log(normalise(testPoints));
-	console.log(normalise(drawnPoints));
-	var err = findError(normalise(testPoints), normalise(drawnPoints));
+	var err1 = findError(normalise(testPoints), normalise(drawnPoints));
+	testPoints.reverse();
+	var err2 = findError(normalise(testPoints), normalise(drawnPoints));
+	var err = Math.min(err1, err2);
 	console.log(err);
 	if (err > error_tolerance) {
 		console.log("Incorrect");

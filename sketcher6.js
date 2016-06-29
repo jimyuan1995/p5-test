@@ -14,6 +14,7 @@ var movedPtsIdx;
 var isMoveCurve;
 var prevMousePt;
 
+
 // for testing
 var testPts = transform(funcPts(Math.sin, -p5.PI, p5.PI), gridWidth, gridWidth, p5.width/2, p5.height/2);
 
@@ -254,6 +255,8 @@ function mouseReleased() {
 		isMoveCurve = false;
 	}
 }
+
+
 	
 
 
