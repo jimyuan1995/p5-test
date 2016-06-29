@@ -19,36 +19,71 @@ function transform(pts, scaleX, scaleY, biasX, biasY) {
 }
 
 
+function getDist(pts1, pts2) {
+	return Math.sqrt(Math.pow(pts1.x - pts2.x, 2) + Math.pow(pts1.y - pts2.y, 2));
+}
+
+
 function findInterceptX(pts) {
 	var intercepts = [];
-	pts = normalise(pts);
-	for (var i = 0; i < pts.length; i++) {
-		if (pts[i].x - 300 < limit && pts[i].getDist(inter[inter.length - 1]) < 10) {
+
+	if (pts[0].y == 300) intercepts.push(pts[0]);
+	for (var i = 1; i < pts.length; i++) {
+		if (pts[i].y == 300) {
 			intercepts.push(pts[i]);
+			continue;
+		}
+
+		if ((pts[i-1].y - 300) * (pts[i].y - 300) < 0) {
+			var dx = pts[i].x - pts[i-1].x;
+			var dy = pts[i].y - pts[i-1].y;
+			var grad = dy/dx;
+			var esti = pts[i-1].x + (1 / grad) * (300 - pts[i-1].y);
+			intercepts.push(new Point(esti, 300));
 		}
 	}
-	return intercepts;	
+
+	return intercepts;
 }
 
 function findInterceptY(pts) {
-	var inter = [];
-	pts = normalise(pts);
-	for (var i = 0; i < pts.length; i++) {
-		if (pts[i].y - 300 < limit && pts[i].getDist(inter[inter.length - 1]) < 10) {
-			inter.push(pts[i]);
+	var intercepts = [];
+
+	if (pts[0].x == 300) intercepts.push(pts[0]);
+	for (var i = 1; i < pts.length; i++) {
+		if (pts[i].x == 300) {
+			intercepts.push(pts[i]);
+			continue;
+		}
+
+		if ((pts[i-1].x - 300) * (pts[i].x - 300) < 0) {
+			var dx = pts[i].x - pts[i-1].x;
+			var dy = pts[i].y - pts[i-1].y;
+			var grad = dy/dx;
+			var esti = pts[i-1].y + grad * (300 - pts[i-1].x);
+			intercepts.push(new Point(300, esti));
 		}
 	}
-	return inter;	
+
+	return intercepts;
 }
 
 function findTurningPts(pts) {
 	var turningPts = [];
-	for (var i = 1; i < pts.length; i++) {
-		var dx = pts[i].x - pts[i-1].x;
-		var dy = pts[i].y - pts[i-1].y;
-		if (dx != 0 && (dy/dx < limit) && pts[i].getDist(turningPts[turningPts.length - 1]) < 10) {
-			turningPts.push(pts[i]);
+
+	var grad = [];
+	for (var i = 0; i < pts.length - 1; i++) {
+		var dx = pts[i+1].x - pts[i].x;
+		var dy = pts[i+1].y - pts[i].y;
+		grad.push(dy/dx);
+	}
+
+	for (var i = 1; i < grad.length; i++) {
+		if (grad[i-1] != NaN && grad[i] != NaN && grad[i-1] * grad[i] < 0) {
+			if (abs(grad[i-1] - grad[i]) > 0.01) turningPts.push(pts[i]);
 		}
 	}
+
 	return turningPts;
 }
+

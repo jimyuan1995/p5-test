@@ -25,3 +25,6 @@ function draw() {
 // TODO: Discontinuity
 // TODO: not in one go??
 
+drawKnots(findInterceptX(pts));
+	drawKnots(findInterceptY(pts));
+	drawKnots(findTurningPts(pts));

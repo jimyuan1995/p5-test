@@ -112,8 +112,9 @@ function drawLabel() {
 	pop();
 }
 
-function drawCurve(pts) {
+function drawCurve(pts, color) {
 	push();
+	stroke(color);
 	strokeWeight(strkWeight);
 	for (var i = 1; i < pts.length; i++) {
 		line(pts[i-1].x, pts[i-1].y, pts[i].x, pts[i].y);
@@ -144,23 +145,20 @@ function mousePressed() {
 	drawnPoints = [];
 
 	if (testPoints.length != 0) {
-		stroke(0);
 		var testBez = genericBezier(sample(testPoints));
-		drawCurve(testBez);
+		drawCurve(testBez, [0]);
 	}	
 }
 
 function mouseReleased() {
 	setup();
 
-	stroke(0, 155, 255);
 	var drawBez = genericBezier(sample(drawnPoints));
-	drawCurve(drawBez);
+	drawCurve(drawBez, [0, 155, 255]);
 	
 	if (testPoints.length != 0) {
-		stroke(0);
 		var testBez = genericBezier(sample(testPoints));
-		drawCurve(testBez);
+		drawCurve(testBez, [0]);
 		test(testBez, drawBez);
 	}
 }	

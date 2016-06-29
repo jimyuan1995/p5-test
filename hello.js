@@ -1,1 +1,0 @@
-console.log(stroke([0,155,255]));
