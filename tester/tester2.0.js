@@ -81,8 +81,8 @@ function testSpecialPts(testPoints, drawnPoints) {
 		return true;
 	}
 
-	if (!inner(findInterceptX(testPoints), findInterceptX(drawnPoints))) return false;
-	if (!inner(findInterceptY(testPoints), findInterceptY(drawnPoints))) return false;
+	//if (!inner(findInterceptX(testPoints), findInterceptX(drawnPoints))) return false;
+	//if (!inner(findInterceptY(testPoints), findInterceptY(drawnPoints))) return false;
 	if (!inner(findTurningPts(testPoints), findTurningPts(drawnPoints))) return false;
 	return true;
 }
@@ -95,7 +95,7 @@ function test(testPoints, drawnPoints) {
 		if (!normalise_test(testPoints[i], drawnPoints[i], normalise_shape, error_tolerance_shape)) console.log('fail shape');
 		if (!testSpecialPts(testPoints[i], drawnPoints[i])) console.log('fail knots');
 	}
-	console.log('end');
+	console.log('test end');
 }
 
 

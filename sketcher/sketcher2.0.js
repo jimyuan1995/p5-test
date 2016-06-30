@@ -184,6 +184,8 @@ function drawButton() {
 }
 
 function drawCurve(pts, color) {
+	if (pts.length == 0) return;
+
 	if (pts[0] instanceof Array) {
 		for (var i = 0; i < pts.length; i++)
 			drawCurve(pts[i], color);
@@ -272,6 +274,7 @@ function mousePressed() {
 
 function mouseReleased() {
 	if (!isMoveCurve) {
+		if (drawnPtsPartial.length == 0) return;
 		var drawBez = genericBezier(sample(drawnPtsPartial));
 		if (drawBez.length > 0) drawnPoints.push(drawBez);
 

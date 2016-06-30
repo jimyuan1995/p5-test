@@ -25,6 +25,8 @@ function getDist(pts1, pts2) {
 
 
 function findInterceptX(pts) {
+	if (pts.length == 0) return [];
+	
 	var intercepts = [];
 
 	if (pts[0].y == 300) intercepts.push(pts[0]);
@@ -47,6 +49,8 @@ function findInterceptX(pts) {
 }
 
 function findInterceptY(pts) {
+	if (pts.length == 0) return [];
+
 	var intercepts = [];
 
 	if (pts[0].x == 300) intercepts.push(pts[0]);
@@ -69,6 +73,8 @@ function findInterceptY(pts) {
 }
 
 function findTurningPts(pts) {
+	if (pts.length == 0) return [];
+
 	var turningPts = [];
 
 	var grad = [];
@@ -79,7 +85,7 @@ function findTurningPts(pts) {
 	}
 
 	for (var i = 1; i < grad.length; i++) {
-		if (grad[i-1] != NaN && grad[i] != NaN && grad[i-1] * grad[i] < 0) {
+		if (grad[i-1] != NaN && grad[i] != NaN && grad[i-1] * grad[i] < 0 && (pts[i].x - pts[i-1].x) * (pts[i+1].x - pts[i].x) > 0) {
 			if (abs(grad[i-1] - grad[i]) > 0.01) turningPts.push(pts[i]);
 		}
 	}
