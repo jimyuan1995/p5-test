@@ -1,0 +1,1 @@
+console.log(JSON.stringify(funcPts(Math.sin, -Math.PI, Math.PI)));

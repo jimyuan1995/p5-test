@@ -18,15 +18,6 @@ var prevMousePt;
 // for testing
 var testPoints = [];
 
-
-var Point = function(x, y) {
-	this.x = x;
-	this.y = y;
-	this.getDist = function(other) {
-		return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
-	}
-}
-
 function setup() {
 	createCanvas(600, 600);
 	noLoop();
@@ -258,7 +249,7 @@ function mousePressed() {
 	for (var i = 0; i < drawnPoints.length; i++) {
 		var pts = drawnPoints[i];
 		for (var j = 0; j < pts.length; j++) {
-			if (pts[j].getDist(p) < 10) {
+			if (getDist(pts[j], p) < 10) {
 				movedPtsIdx = i;
 				isMoveCurve = true;
 				prevMousePt = p;

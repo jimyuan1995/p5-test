@@ -26,7 +26,7 @@ function getDist(pts1, pts2) {
 
 function findInterceptX(pts) {
 	if (pts.length == 0) return [];
-	
+
 	var intercepts = [];
 
 	if (pts[0].y == 300) intercepts.push(pts[0]);
@@ -92,4 +92,6 @@ function findTurningPts(pts) {
 
 	return turningPts;
 }
+
+
 
