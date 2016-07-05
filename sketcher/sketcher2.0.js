@@ -4,6 +4,7 @@
 var gridWidth = 30;
 var strkWeight = 2;
 var padding = 15;
+var h = 600, w = 600;
 
 // point collection
 var drawnPtsPartial;
@@ -14,12 +15,11 @@ var movedPtsIdx;
 var isMoveCurve;
 var prevMousePt;
 
-
 // for testing
 var testPoints = [];
 
 function setup() {
-	createCanvas(600, 600);
+	createCanvas(w, h);
 	noLoop();
 	cursor(CROSS);
 	drawBackground();
@@ -45,14 +45,14 @@ function drawHorizontalAxis() {
 	noFill();
 
 	var leftMargin = padding;
-	var rightMargin = width - padding;
+	var rightMargin = w - padding;
 
 	beginShape();
-	vertex(leftMargin, height/2);
-	vertex(rightMargin, height / 2);
-	vertex(rightMargin - 10, height / 2 - 5);
-	vertex(rightMargin, height / 2);
-	vertex(rightMargin - 10, height / 2 + 5);
+	vertex(leftMargin, h/2);
+	vertex(rightMargin, h / 2);
+	vertex(rightMargin - 10, h / 2 - 5);
+	vertex(rightMargin, h / 2);
+	vertex(rightMargin - 10, h / 2 + 5);
 	endShape();
 	
 	pop();
@@ -67,14 +67,14 @@ function drawVerticalAxis() {
 	noFill();
 
 	var upMargin = padding;
-	var bottomMargin = height - padding;
+	var bottomMargin = h - padding;
 
 	beginShape();
-	vertex(width/2, bottomMargin);
-	vertex(width/2, upMargin);
-	vertex(width/2 - 5, upMargin + 10);
-	vertex(width/2, upMargin);
-	vertex(width/2 + 5, upMargin + 10);
+	vertex(w/2, bottomMargin);
+	vertex(w/2, upMargin);
+	vertex(w/2 - 5, upMargin + 10);
+	vertex(w/2, upMargin);
+	vertex(w/2 + 5, upMargin + 10);
 	endShape();
 	
 	pop();
@@ -89,8 +89,8 @@ function drawGrid() {
 	stroke(215);
 
 	push();
-	translate(0, height / 2);
-	var num = height / (gridWidth * 2);
+	translate(0, h / 2);
+	var num = h / (gridWidth * 2);
 	for (var i = 0; i < num; i++) {
 		line(0, -i*gridWidth, width, -i*gridWidth);
 		line(0, i*gridWidth, width, i*gridWidth);
@@ -98,11 +98,11 @@ function drawGrid() {
 	pop();
 
 	push();
-	translate(width / 2, 0);
-	var num = width / (gridWidth * 2);
+	translate(w / 2, 0);
+	var num = w / (gridWidth * 2);
 	for (var i = 0; i < num; i++) {
-		line(-i*gridWidth, 0, -i*gridWidth, height);
-		line(i*gridWidth, 0, i*gridWidth, height);
+		line(-i*gridWidth, 0, -i*gridWidth, h);
+		line(i*gridWidth, 0, i*gridWidth, h);
 	}
 	pop();
 
@@ -116,9 +116,9 @@ function drawLabel() {
 	stroke(0);
 	strokeWeight(1);
 
-	text("O", width/2 - 15, height/2 + 15);
-	text("x", width - 12, height/2 + 15);
-	text("y", width/2 + 5, 12);
+	text("O", w/2 - 15, h/2 + 15);
+	text("x", w - 12, h/2 + 15);
+	text("y", w/2 + 5, 12);
 
 	pop();
 }
@@ -132,24 +132,24 @@ function drawScale() {
 	textSize(12);
 
 	push();
-	translate(0, height / 2);
-	var num = height / (gridWidth * 2);
+	translate(0, h / 2);
+	var num = h / (gridWidth * 2);
 	for (var i = 1; i < num; i++) {
-		line(width/2 -len, -i*gridWidth, width/2 + len, -i*gridWidth);
-		line(width/2 - len, i*gridWidth, width/2 + len, i*gridWidth);
-		text(i, width/2 + 5, -i * gridWidth + 5);
-		text(-i, width/2 + 5, i * gridWidth + 5);
+		line(w/2 -len, -i*gridWidth, w/2 + len, -i*gridWidth);
+		line(w/2 - len, i*gridWidth, w/2 + len, i*gridWidth);
+		text(i, w/2 + 5, -i * gridWidth + 5);
+		text(-i, w/2 + 5, i * gridWidth + 5);
 	}
 	pop();
 
 	push();
-	translate(width / 2, 0);
-	var num = width / (gridWidth * 2);
+	translate(w / 2, 0);
+	var num = w / (gridWidth * 2);
 	for (var i = 1; i < num; i++) {
-		line(-i*gridWidth, height/2 - len, -i*gridWidth, height / 2 + len);
-		line(i*gridWidth, height/2 - len, i*gridWidth, height /2 + len);
-		text(-i, -i * gridWidth - 5, height / 2 + 15);
-		text(i, i * gridWidth - 5, height / 2 + 15);
+		line(-i*gridWidth, h/2 - len, -i*gridWidth, h / 2 + len);
+		line(i*gridWidth, h/2 - len, i*gridWidth, h /2 + len);
+		text(-i, -i * gridWidth - 5, h / 2 + 15);
+		text(i, i * gridWidth - 5, h / 2 + 15);
 	}
 	pop();
 
@@ -158,7 +158,7 @@ function drawScale() {
 
 function drawButton() {
 	var buttonClear = createButton('clear');
-	buttonClear.position(width - 50, padding);
+	buttonClear.position(w - 50, padding);
 	buttonClear.mousePressed(function() {
 		drawBackground();
 		testPoints = drawnPoints;
@@ -168,7 +168,7 @@ function drawButton() {
 	});
 
 	var buttonTest = createButton("test");
-	buttonTest.position(width - 50, padding+20);
+	buttonTest.position(w - 50, padding+20);
 	buttonTest.mousePressed(function() {
 		test(testPoints, drawnPoints);
 	});

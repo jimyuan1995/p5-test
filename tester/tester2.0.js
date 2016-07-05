@@ -15,14 +15,14 @@ function normalise_position(pts) {
 	var maxY = 0, 
 		maxX = 0;
 	for (var i = 1; i < pts.length; i++) {
-		maxY = Math.max(abs(height/2 - pts[i].y), maxY);
-		maxX = Math.max(abs(pts[i].x - width/2), maxX);
+		maxY = Math.max(abs(h/2 - pts[i].y), maxY);
+		maxX = Math.max(abs(pts[i].x - w/2), maxX);
 	}
 	
 	var normalisedPts = [];
 	for (var i = 0; i < pts.length; i++) {
-		var nx = (pts[i].x - width/2) / maxX;
-		var ny = (height/2 - pts[i].y) / maxY;
+		var nx = (pts[i].x - w/2) / maxX;
+		var ny = (h/2 - pts[i].y) / maxY;
 		normalisedPts.push(new Point(nx, ny));
 	}
 
@@ -76,22 +76,22 @@ function testSpecialPts(testPoints, drawnPoints) {
 		if (pts1.length == 0) return true;
 
 		for (var i = 0; i < pts1.length; i++)
-			if ((pts1[i].x - 300) * (pts2[i].x - 300) < 0 || (pts1[i].y - 300) * (pts2[i].y - 300) < 0) 
+			if ((pts1[i].x - w/2) * (pts2[i].x - w/2) < 0 || (pts1[i].y - h/2) * (pts2[i].y - h/2) < 0) 
 				return false;
 
 		return true;
 	}
 
-	//if (!inner(findInterceptX(testPoints), findInterceptX(drawnPoints))) return false;
-	//if (!inner(findInterceptY(testPoints), findInterceptY(drawnPoints))) return false;
-	if (!inner(findTurningPts(testPoints), findTurningPts(drawnPoints))) return false;
+	//if (!inner(func.findInterceptX(testPoints), func.findInterceptX(drawnPoints))) return false;
+	//if (!inner(func.findInterceptY(testPoints), func.findInterceptY(drawnPoints))) return false;
+	if (!inner(func.findTurningPts(testPoints), func.findTurningPts(drawnPoints))) return false;
 	return true;
 }
 
 function compare(pts1, pts2) {
 	function findMinX(pts) {
-		if (pts.length == 0) return -1000;
-		var min = 0;
+		if (pts.length == 0) return 0;
+		var min = w;
 		for (var i = 0; i < pts.length; i++) 
 			min = Math.min(min, pts[i].x);
 		return min;
@@ -107,18 +107,41 @@ function compare(pts1, pts2) {
 
 
 function test(testPoints, drawnPoints) {
+	var isCorrect = true;
+	
 	if (testPoints.length != drawnPoints.length) {
-		console.log('Different number of segments');
-		return;
+		isCorrect = false;
+		console.log('fail due to different number of segments');
+	} else {
+		testPoints = testPoints.sort(compare);
+		drawnPoints = drawnPoints.sort(compare);
+
+		for (var i = 0; i < testPoints.length; i++) {
+			if (!normalise_test(testPoints[i], drawnPoints[i], normalise_position, error_tolerance_position)) {
+				isCorrect = false;
+				console.log('segment: ' + (i+1) + " fail position test");
+			} 
+
+			if (!normalise_test(testPoints[i], drawnPoints[i], normalise_shape, error_tolerance_shape)) {
+				isCorrect = false;
+				console.log('segment: ' + (i+1) + " fail shape test");
+			} 
+
+			if (!testSpecialPts(testPoints[i], drawnPoints[i])) {
+				isCorrect = false;
+				console.log('segment: ' + (i+1) + " fail points test");
+				
+			}
+
+			if (!isCorrect) break;
+		}
 	}
-	testPoints = testPoints.sort(compare);
-	drawnPoints = drawnPoints.sort(compare);
-	for (var i = 0; i < testPoints.length; i++) {
-		if (!normalise_test(testPoints[i], drawnPoints[i], normalise_position, error_tolerance_position)) console.log(i + ' fail position');
-		if (!normalise_test(testPoints[i], drawnPoints[i], normalise_shape, error_tolerance_shape)) console.log(i + ' fail shape');
-		if (!testSpecialPts(testPoints[i], drawnPoints[i])) console.log(i + ' fail knots');
+
+	if (isCorrect) {
+		console.log('success');
+	} else {
+		console.log('fail');
 	}
-	console.log('test end');
 }
 
 
